@@ -1,10 +1,11 @@
 ﻿using System;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace ElectoralApp.Models
 {
-    public partial class BDelectoralContext : DbContext
+    public partial class BDelectoralContext : IdentityDbContext
     {
         public BDelectoralContext()
         {
@@ -33,6 +34,8 @@ namespace ElectoralApp.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
 
             modelBuilder.Entity<Candidatos>(entity =>
