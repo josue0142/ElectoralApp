@@ -7,17 +7,45 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ElectoralApp.Controllers
 {
+    public class AdminOptions
+    {
+        public string Name { get; set; }
+        public string NameController { get; set; }
+    }
+
     [Authorize]
     public class AdminController : Controller
     {
         public IActionResult Index()
         {
-            List<string> optionsList = new List<string> { 
-                "Candidatos",
-                "Partidos",
-                "Puesto electivo",
-                "Ciudadanos",
-                "Elecciones" };
+            List<AdminOptions> optionsList = new List<AdminOptions> {
+
+                new AdminOptions{
+                    Name = "Candidatos",
+                    NameController = "Candidatos"
+                },
+
+                new AdminOptions{
+                    Name = "Partidos",
+                    NameController = "Partidos"
+                },
+
+                new AdminOptions{
+                    Name = "Puesto electivo",
+                    NameController = "PuestoElectivo"
+                },
+                
+                new AdminOptions{
+                    Name = "Ciudadanos",
+                    NameController = "Ciudadanos"
+                },
+                       
+                new AdminOptions{
+                    Name = "Elecciones",
+                    NameController = "Elecciones"
+                }
+
+            };
 
             ViewBag.OptionsList = optionsList;
             return View();
