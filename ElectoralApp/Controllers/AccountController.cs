@@ -36,7 +36,7 @@ namespace ElectoralApp.Controllers
                 if (result.Succeeded)
                 {
                     await signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Admin");
                 }
 
                 foreach (var error in result.Errors)
@@ -71,7 +71,7 @@ namespace ElectoralApp.Controllers
 
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Admin");
                 }
 
                  ModelState.AddModelError(string.Empty,"Login incorrecto");
