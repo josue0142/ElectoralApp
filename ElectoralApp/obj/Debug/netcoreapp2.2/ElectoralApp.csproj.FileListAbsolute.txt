@@ -36,3 +36,7 @@ C:\Users\eljos\source\repos\ElectoralApp\ElectoralApp\obj\Debug\netcoreapp2.2\Ra
 C:\Users\eljos\source\repos\ElectoralApp\ElectoralApp\obj\Debug\netcoreapp2.2\Razor\Views\PuestoElectivo\Delete.cshtml.g.cs
 C:\Users\eljos\source\repos\ElectoralApp\ElectoralApp\obj\Debug\netcoreapp2.2\Razor\Views\PuestoElectivo\Edit.cshtml.g.cs
 C:\Users\eljos\source\repos\ElectoralApp\ElectoralApp\obj\Debug\netcoreapp2.2\Razor\Views\PuestoElectivo\Index.cshtml.g.cs
+C:\Users\eljos\source\repos\ElectoralApp\ElectoralApp\obj\Debug\netcoreapp2.2\Razor\Views\Ciudadanos\Create.cshtml.g.cs
+C:\Users\eljos\source\repos\ElectoralApp\ElectoralApp\obj\Debug\netcoreapp2.2\Razor\Views\Ciudadanos\Delete.cshtml.g.cs
+C:\Users\eljos\source\repos\ElectoralApp\ElectoralApp\obj\Debug\netcoreapp2.2\Razor\Views\Ciudadanos\Edit.cshtml.g.cs
+C:\Users\eljos\source\repos\ElectoralApp\ElectoralApp\obj\Debug\netcoreapp2.2\Razor\Views\Ciudadanos\Index.cshtml.g.cs

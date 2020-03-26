@@ -7,23 +7,27 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ElectoralApp.Models;
 using Microsoft.AspNetCore.Authorization;
+using ElectoralApp.DTO;
+using AutoMapper;
 
 namespace ElectoralApp.Controllers
 {
     [Authorize]
-    public class PuestoElectivoController : Controller
+    public class CiudadanosController : Controller
     {
         private readonly BDelectoralContext _context;
+        private readonly IMapper _mapper;
 
-        public PuestoElectivoController(BDelectoralContext context)
+        public CiudadanosController(BDelectoralContext context, IMapper mapper)
         {
             _context = context;
+            this._mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
-            return View (_context.PuestoElectivo.ToList());
+            return View(_context.Ciudadanos.ToList());
         }
 
         [HttpGet]
@@ -33,16 +37,17 @@ namespace ElectoralApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(PuestoElectivo puestoElectivo)
+        public async Task<IActionResult> Create(Ciudadanos ciudadanos)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(puestoElectivo);
+                _context.Add(ciudadanos);
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction("Index");
             }
-            return View(puestoElectivo);
+
+            return View(ciudadanos);
         }
 
         [HttpGet]
@@ -53,19 +58,19 @@ namespace ElectoralApp.Controllers
                 return NotFound();
             }
 
-            var puestoElectivo = await _context.PuestoElectivo.FindAsync(id);
-            if (puestoElectivo == null)
+            var ciudadanos = await _context.Ciudadanos.FindAsync(id);
+            if (ciudadanos == null)
             {
                 return NotFound();
             }
 
-            return View(puestoElectivo);
+            return View(ciudadanos);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id,PuestoElectivo puestoElectivo)
+        public async Task<IActionResult> Edit(int id, Ciudadanos ciudadanos)
         {
-            if (id != puestoElectivo.Id)
+            if (id != ciudadanos.Id)
             {
                 return NotFound();
             }
@@ -74,17 +79,18 @@ namespace ElectoralApp.Controllers
             {
                 try
                 {
-                    _context.Update(puestoElectivo);
+                    _context.Update(ciudadanos);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                       return NotFound();
+                    return NotFound();
                 }
 
                 return RedirectToAction("Index");
             }
-            return View(puestoElectivo);
+
+            return View(ciudadanos);
         }
 
         [HttpGet]
@@ -95,20 +101,21 @@ namespace ElectoralApp.Controllers
                 return NotFound();
             }
 
-            var puestoElectivo = await _context.PuestoElectivo.FirstOrDefaultAsync(m => m.Id == id);
-            if (puestoElectivo == null)
+            var ciudadanos = await _context.Ciudadanos.FirstOrDefaultAsync(m => m.Id == id);
+
+            if (ciudadanos == null)
             {
                 return NotFound();
             }
 
-            return View(puestoElectivo);
+            return View(ciudadanos);
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            var puestoElectivo = await _context.PuestoElectivo.FindAsync(id);
-            _context.PuestoElectivo.Remove(puestoElectivo);
+            var ciudadanos = await _context.Ciudadanos.FindAsync(id);
+            _context.Ciudadanos.Remove(ciudadanos);
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");

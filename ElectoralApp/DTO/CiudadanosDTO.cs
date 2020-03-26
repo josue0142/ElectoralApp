@@ -1,17 +1,21 @@
-﻿using System;
+﻿using ElectoralApp.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace ElectoralApp.Models
+namespace ElectoralApp.DTO
 {
-    public partial class Ciudadanos
+    public class CiudadanosDTO
     {
-        public Ciudadanos()
+        public CiudadanosDTO()
         {
             Resultados = new HashSet<Resultados>();
         }
 
         public int Id { get; set; }
+
         [Required]
         [Display(Name = "Documento de Identidad")]
         public string DocumentoDeIdentidad { get; set; }
