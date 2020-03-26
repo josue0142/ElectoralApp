@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ElectoralApp.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ElectoralApp.Controllers
 {
+    [Authorize]
     public class PuestoElectivoController : Controller
     {
         private readonly BDelectoralContext _context;
@@ -18,53 +20,32 @@ namespace ElectoralApp.Controllers
             _context = context;
         }
 
-        // GET: PuestoElectivo
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public IActionResult Index()
         {
-            return View(await _context.PuestoElectivo.ToListAsync());
+            return View (_context.PuestoElectivo.ToList());
         }
 
-        // GET: PuestoElectivo/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var puestoElectivo = await _context.PuestoElectivo
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (puestoElectivo == null)
-            {
-                return NotFound();
-            }
-
-            return View(puestoElectivo);
-        }
-
-        // GET: PuestoElectivo/Create
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: PuestoElectivo/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Descripción,Estado")] PuestoElectivo puestoElectivo)
+        public async Task<IActionResult> Create(PuestoElectivo puestoElectivo)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(puestoElectivo);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+                return RedirectToAction("Index");
             }
             return View(puestoElectivo);
         }
 
-        // GET: PuestoElectivo/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -77,15 +58,12 @@ namespace ElectoralApp.Controllers
             {
                 return NotFound();
             }
+
             return View(puestoElectivo);
         }
 
-        // POST: PuestoElectivo/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Descripción,Estado")] PuestoElectivo puestoElectivo)
+        public async Task<IActionResult> Edit(int id,PuestoElectivo puestoElectivo)
         {
             if (id != puestoElectivo.Id)
             {
@@ -101,21 +79,14 @@ namespace ElectoralApp.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PuestoElectivoExists(puestoElectivo.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                  
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index");
             }
             return View(puestoElectivo);
         }
 
-        // GET: PuestoElectivo/Delete/5
+        [HttpGet]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -123,8 +94,7 @@ namespace ElectoralApp.Controllers
                 return NotFound();
             }
 
-            var puestoElectivo = await _context.PuestoElectivo
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var puestoElectivo = await _context.PuestoElectivo.FirstOrDefaultAsync(m => m.Id == id);
             if (puestoElectivo == null)
             {
                 return NotFound();
@@ -133,20 +103,14 @@ namespace ElectoralApp.Controllers
             return View(puestoElectivo);
         }
 
-        // POST: PuestoElectivo/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
         {
             var puestoElectivo = await _context.PuestoElectivo.FindAsync(id);
             _context.PuestoElectivo.Remove(puestoElectivo);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
 
-        private bool PuestoElectivoExists(int id)
-        {
-            return _context.PuestoElectivo.Any(e => e.Id == id);
+            return RedirectToAction("Index");
         }
     }
 }
