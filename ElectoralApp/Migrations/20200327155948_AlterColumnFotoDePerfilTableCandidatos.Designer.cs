@@ -4,14 +4,16 @@ using ElectoralApp.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ElectoralApp.Migrations
 {
     [DbContext(typeof(BDelectoralContext))]
-    partial class BDelectoralContextModelSnapshot : ModelSnapshot
+    [Migration("20200327155948_AlterColumnFotoDePerfilTableCandidatos")]
+    partial class AlterColumnFotoDePerfilTableCandidatos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -46,7 +46,6 @@ namespace ElectoralApp.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.FotoDePerfil)
-                    .IsRequired()
                     .HasColumnName("Foto_de_perfil")
                     .HasMaxLength(25)
                     .IsUnicode(false);
@@ -116,7 +115,6 @@ namespace ElectoralApp.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.LogoDelPartido)
-                    .IsRequired()
                     .HasColumnName("Logo_del_partido")
                     .HasMaxLength(25)
                     .IsUnicode(false);

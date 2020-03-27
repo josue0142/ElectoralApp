@@ -1,0 +1,76 @@
+﻿@model IEnumerable<ElectoralApp.Models.Candidatos>
+
+@{
+    ViewData["Title"] = "Candidatos";
+}
+
+<h1>Candidatos</h1>
+
+<p>
+    <a asp-action="Create">Añadir</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Apellido)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FotoDePerfil)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Estado)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PartidoFkNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PuestoFkNavigation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Apellido)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FotoDePerfil)
+                </td>
+                <td>
+                    @if (item.Estado == true)
+                    {
+                        <span>Activo</span>
+                    }
+                    else
+                    {
+                        <span>Inactivo</span>
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PartidoFkNavigation.Descripción)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PuestoFkNavigation.Descripción)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<p>
+    <a asp-action="Index" asp-controller="Admin">Volver al Menu Administrador</a>
+</p>
+
