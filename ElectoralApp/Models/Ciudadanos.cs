@@ -25,7 +25,6 @@ namespace ElectoralApp.Models
         [Required]
         public string Email { get; set; }
 
-        [Required]
         public bool Estado { get; set; }
 
         public virtual ICollection<Resultados> Resultados { get; set; }

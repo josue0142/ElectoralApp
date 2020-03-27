@@ -19,7 +19,6 @@ namespace ElectoralApp.Models
         [Required]
         public string Descripción { get; set; }
 
-        [Required]
         public bool Estado { get; set; }
 
         public virtual ICollection<Candidatos> Candidatos { get; set; }

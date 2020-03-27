@@ -40,3 +40,7 @@ C:\Users\eljos\source\repos\ElectoralApp\ElectoralApp\obj\Debug\netcoreapp2.2\Ra
 C:\Users\eljos\source\repos\ElectoralApp\ElectoralApp\obj\Debug\netcoreapp2.2\Razor\Views\Ciudadanos\Delete.cshtml.g.cs
 C:\Users\eljos\source\repos\ElectoralApp\ElectoralApp\obj\Debug\netcoreapp2.2\Razor\Views\Ciudadanos\Edit.cshtml.g.cs
 C:\Users\eljos\source\repos\ElectoralApp\ElectoralApp\obj\Debug\netcoreapp2.2\Razor\Views\Ciudadanos\Index.cshtml.g.cs
+C:\Users\eljos\source\repos\ElectoralApp\ElectoralApp\obj\Debug\netcoreapp2.2\Razor\Views\Partidos\Create.cshtml.g.cs
+C:\Users\eljos\source\repos\ElectoralApp\ElectoralApp\obj\Debug\netcoreapp2.2\Razor\Views\Partidos\Delete.cshtml.g.cs
+C:\Users\eljos\source\repos\ElectoralApp\ElectoralApp\obj\Debug\netcoreapp2.2\Razor\Views\Partidos\Edit.cshtml.g.cs
+C:\Users\eljos\source\repos\ElectoralApp\ElectoralApp\obj\Debug\netcoreapp2.2\Razor\Views\Partidos\Index.cshtml.g.cs

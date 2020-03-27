@@ -1,0 +1,44 @@
+﻿@model ElectoralApp.Models.Partidos
+
+@{
+    ViewData["Title"] = "Crear";
+}
+
+<h1>Añadir Partido</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Nombre" class="control-label"></label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Descripción" class="control-label"></label>
+                <input asp-for="Descripción" class="form-control" />
+                <span asp-validation-for="Descripción" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LogoDelPartido" class="control-label"></label>
+                <input asp-for="LogoDelPartido" class="form-control" />
+                <span asp-validation-for="LogoDelPartido" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Estado" /> @Html.DisplayNameFor(model => model.Estado)
+                </label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Añadir" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Volver a la Lista</a>
+</div>
+
