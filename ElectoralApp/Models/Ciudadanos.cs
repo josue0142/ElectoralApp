@@ -12,6 +12,7 @@ namespace ElectoralApp.Models
         }
 
         public int Id { get; set; }
+
         [Required]
         [Display(Name = "Documento de Identidad")]
         public string DocumentoDeIdentidad { get; set; }
