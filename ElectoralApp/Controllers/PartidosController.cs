@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ElectoralApp.Models;
 using Microsoft.AspNetCore.Authorization;
+using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
+using ElectoralApp.DTO;
+using System.IO;
 
 namespace ElectoralApp.Controllers
 {
@@ -14,10 +18,14 @@ namespace ElectoralApp.Controllers
     public class PartidosController : Controller
     {
         private readonly BDelectoralContext _context;
+        private readonly IMapper _mapper;
+        private readonly IHostingEnvironment _iHostingEnvironment;
 
-        public PartidosController(BDelectoralContext context)
+        public PartidosController(BDelectoralContext context, IMapper mapper, IHostingEnvironment iHostingEnvironment)
         {
             _context = context;
+            this._mapper = mapper;
+            this._iHostingEnvironment = iHostingEnvironment;
         }
 
         [HttpGet]
@@ -33,17 +41,35 @@ namespace ElectoralApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Partidos partidos)
+        public async Task<IActionResult> Create(PartidosDTO partidosDTO)
         {
+            var partido = new Partidos();
+
             if (ModelState.IsValid)
             {
-                _context.Add(partidos);
+                string uniqueName = null;
+                if (partidosDTO.LogoDelPartido != null)
+                {
+                    var folderPath = Path.Combine(_iHostingEnvironment.WebRootPath, "images");
+                    uniqueName = Guid.NewGuid().ToString() + "_" + partidosDTO.LogoDelPartido.FileName;
+                    var filePath = Path.Combine(folderPath, uniqueName);
+
+                    if (filePath != null) partidosDTO
+                            .LogoDelPartido
+                            .CopyTo(new FileStream(filePath, mode: FileMode.Create));
+                }
+
+                partido = _mapper.Map<Partidos>(partidosDTO);
+
+                partido.LogoDelPartido = uniqueName;
+
+                _context.Add(partido);
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction("Index");
             }
 
-            return View(partidos);
+            return View(partidosDTO);
         }
 
         [HttpGet]
@@ -61,33 +87,67 @@ namespace ElectoralApp.Controllers
                 return NotFound();
             }
 
-            return View(partidos);
+            var partidosDTO = _mapper.Map<PartidosDTO>(partidos);
+            return View(partidosDTO);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, Partidos partidos)
+        public async Task<IActionResult> Edit(int id, PartidosDTO partidosDTO)
         {
-            if (id != partidos.Id)
+            if (id != partidosDTO.Id)
             {
                 return NotFound();
             }
+
+            var partido = await _context.Partidos.FirstOrDefaultAsync(d => d.Id == partidosDTO.Id);
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(partidos);
+                    string uniqueName = null;
+                    if (partidosDTO.LogoDelPartido != null)
+                    {
+                        var folderPath = Path.Combine(_iHostingEnvironment.WebRootPath, "images");
+                        uniqueName = Guid.NewGuid().ToString() + "_" + partidosDTO.LogoDelPartido.FileName;
+                        var filePath = Path.Combine(folderPath, uniqueName);
+
+                        if (!string.IsNullOrEmpty(partido.LogoDelPartido))
+                        {
+                            var filePathDelete = Path.Combine(folderPath, partido.LogoDelPartido);
+
+                            if (System.IO.File.Exists(filePathDelete))
+                            {
+                                var fileInfo = new System.IO.FileInfo(filePathDelete);
+                                fileInfo.Delete();
+                            }
+                        }
+
+                        if (filePath != null) partidosDTO
+                                .LogoDelPartido
+                                .CopyTo(new FileStream(filePath, mode: FileMode.Create));
+                    }
+
+                    //Id, Nombre, Descripción, Logo_del_partido, Estado
+                    partido.Nombre = partidosDTO.Nombre;
+                    partido.Descripción = partidosDTO.Descripción;
+                    partido.Estado = partidosDTO.Estado; 
+                    partido.LogoDelPartido = uniqueName;
+
+                    _context.Update(partido);
                     await _context.SaveChangesAsync();
+
+                    return RedirectToAction("Index");
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception)
                 {
-                    return NotFound();
+
+                    throw;
                 }
 
-                return RedirectToAction("Index");
             }
 
-            return View(partidos);
+            return View(partidosDTO);
         }
 
         [HttpGet]

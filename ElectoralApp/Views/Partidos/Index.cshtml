@@ -13,13 +13,13 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.LogoDelPartido)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Nombre)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Descripción)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LogoDelPartido)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Estado)
@@ -29,7 +29,13 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
+
+    var photoPath = "~/images/" + ((!string.IsNullOrEmpty(item.LogoDelPartido) ? item.LogoDelPartido : "nophoto.png"));
+
         <tr class="font-weight-bold">
+            <td>
+                <img width="200" height="200" src="@photoPath" alt="Responsive image" asp-append-version="true" />
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Nombre)
             </td>
@@ -37,13 +43,10 @@
                 @Html.DisplayFor(modelItem => item.Descripción)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.LogoDelPartido)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Estado)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> 
+                <a asp-action="Edit" asp-route-id="@item.Id">Editar</a>
                 <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
             </td>
         </tr>

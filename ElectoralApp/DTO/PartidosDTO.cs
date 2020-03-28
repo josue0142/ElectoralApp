@@ -1,13 +1,16 @@
-﻿using System;
+﻿using ElectoralApp.Models;
+using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace ElectoralApp.Models
+namespace ElectoralApp.DTO
 {
-    public partial class Partidos
+    public class PartidosDTO
     {
-        public Partidos()
+        public PartidosDTO()
         {
             Candidatos = new HashSet<Candidatos>();
         }
@@ -21,7 +24,7 @@ namespace ElectoralApp.Models
         public string Descripción { get; set; }
 
         [Display(Name = "Logo del Partido")]
-        public string LogoDelPartido { get; set; }
+        public IFormFile LogoDelPartido { get; set; }
 
         public bool Estado { get; set; }
 

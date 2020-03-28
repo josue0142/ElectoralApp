@@ -28,6 +28,7 @@ namespace ElectoralApp.Models
         [Display(Name = "Puesto Electivo")]
         public int? PuestoFk { get; set; }
 
+        [Display(Name = "Foto del Candidato")]
         public string FotoDePerfil { get; set; }
         public bool Estado { get; set; }
 

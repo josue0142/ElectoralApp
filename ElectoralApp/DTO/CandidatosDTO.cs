@@ -31,6 +31,7 @@ namespace ElectoralApp.DTO
         [Display(Name = "Puesto Electivo")]
         public int? PuestoFk { get; set; }
 
+        [Display(Name = "Foto del Candidato")]
         public IFormFile FotoDePerfil { get; set; }
         public bool Estado { get; set; }
 

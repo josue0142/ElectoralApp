@@ -13,6 +13,7 @@ namespace ElectoralApp.DTO
         public AutoMapperProfile()
         {
             ConfigureCandidato();
+            ConfigurePartido();
         }
 
         private void ConfigureCandidato()
@@ -20,6 +21,13 @@ namespace ElectoralApp.DTO
             CreateMap<CandidatosDTO, Candidatos>();
 
             CreateMap<Candidatos, CandidatosDTO>().ForMember(dest => dest.FotoDePerfil, opt => opt.Ignore());
+        }
+
+        private void ConfigurePartido()
+        {
+            CreateMap<PartidosDTO, Partidos>();
+
+            CreateMap<Partidos, PartidosDTO>().ForMember(dest => dest.LogoDelPartido, opt => opt.Ignore());
         }
     }
 }
