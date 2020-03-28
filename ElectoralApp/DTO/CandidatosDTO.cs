@@ -23,11 +23,13 @@ namespace ElectoralApp.DTO
         [Required]
         public string Apellido { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Para crear un Candidato debe " +
+           "existir al menos un partido creado y activo")]
         [Display(Name = "Partido")]
         public int? PartidoFk { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Para crear un Candidato debe " +
+            "existir al menos un puesto creado y activo")]
         [Display(Name = "Puesto Electivo")]
         public int? PuestoFk { get; set; }
 

@@ -36,8 +36,16 @@ namespace ElectoralApp.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            ViewData["PartidoFk"] = new SelectList(_context.Partidos, "Id", "Nombre");
-            ViewData["PuestoFk"] = new SelectList(_context.PuestoElectivo, "Id", "Nombre");
+            ViewData["PartidoFk"] = new SelectList(
+                _context
+                .Partidos
+                .Where(a=> a.Estado == true), "Id", "Nombre");
+
+            ViewData["PuestoFk"] = new SelectList(
+                _context
+                .PuestoElectivo
+                .Where(a => a.Estado == true), "Id", "Nombre");
+
             return View();
         }
 
@@ -70,8 +78,15 @@ namespace ElectoralApp.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewData["PartidoFk"] = new SelectList(_context.Partidos, "Id", "Nombre", candidatosDTO.PartidoFk);
-            ViewData["PuestoFk"] = new SelectList(_context.PuestoElectivo, "Id", "Nombre", candidatosDTO.PuestoFk);
+            ViewData["PartidoFk"] = new SelectList(
+                _context
+                .Partidos
+                .Where(a => a.Estado == true), "Id", "Nombre", candidatosDTO.PartidoFk);
+
+            ViewData["PuestoFk"] = new SelectList(
+                _context
+                .PuestoElectivo
+                .Where(a => a.Estado == true), "Id", "Nombre", candidatosDTO.PuestoFk);
 
             return View(candidatosDTO);
         }
@@ -91,8 +106,15 @@ namespace ElectoralApp.Controllers
                 return NotFound();
             }
 
-            ViewData["PartidoFk"] = new SelectList(_context.Partidos, "Id", "Nombre", candidatos.PartidoFk);
-            ViewData["PuestoFk"] = new SelectList(_context.PuestoElectivo, "Id", "Nombre", candidatos.PuestoFk);
+            ViewData["PartidoFk"] = new SelectList(
+                _context
+                .Partidos
+                .Where(a => a.Estado == true), "Id", "Nombre", candidatos.PartidoFk);
+
+            ViewData["PuestoFk"] = new SelectList(
+                _context
+                .PuestoElectivo
+                .Where(a => a.Estado == true), "Id", "Nombre", candidatos.PuestoFk);
 
             var candidatoDTO = _mapper.Map<CandidatosDTO>(candidatos);
             return View(candidatoDTO);
@@ -155,8 +177,15 @@ namespace ElectoralApp.Controllers
                 throw;
             }
 
-            ViewData["PartidoFk"] = new SelectList(_context.Partidos, "Id", "Nombre", candidatosDTO.PartidoFk);
-            ViewData["PuestoFk"] = new SelectList(_context.PuestoElectivo, "Id", "Nombre", candidatosDTO.PuestoFk);
+            ViewData["PartidoFk"] = new SelectList(
+                 _context
+                 .Partidos
+                 .Where(a => a.Estado == true), "Id", "Nombre", candidatosDTO.PartidoFk);
+
+            ViewData["PuestoFk"] = new SelectList(
+                _context
+                .PuestoElectivo
+                .Where(a => a.Estado == true), "Id", "Nombre", candidatosDTO.PuestoFk);
 
             return View(candidatosDTO);
         }
