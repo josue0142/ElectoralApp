@@ -13,13 +13,13 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.FotoDePerfil)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Nombre)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Apellido)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FotoDePerfil)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Estado)
@@ -36,15 +36,16 @@
     <tbody>
         @foreach (var item in Model)
         {
+            var photoPath = "~/images/" + ((!string.IsNullOrEmpty(item.FotoDePerfil) ? item.FotoDePerfil : "nophoto.png"));
             <tr>
+                <td>
+                    <img width="200" height="200" src="@photoPath" alt="Responsive image" asp-append-version="true" />
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Nombre)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Apellido)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FotoDePerfil)
                 </td>
                 <td>
                     @if (item.Estado == true)

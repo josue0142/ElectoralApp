@@ -1,4 +1,5 @@
 ﻿using ElectoralApp.Models;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,18 +8,14 @@ using System.Threading.Tasks;
 
 namespace ElectoralApp.DTO
 {
-    public class CiudadanosDTO
+    public class CandidatosDTO
     {
-        public CiudadanosDTO()
+        public CandidatosDTO()
         {
             Resultados = new HashSet<Resultados>();
         }
 
         public int Id { get; set; }
-
-        [Required]
-        [Display(Name = "Documento de Identidad")]
-        public string DocumentoDeIdentidad { get; set; }
 
         [Required]
         public string Nombre { get; set; }
@@ -27,11 +24,21 @@ namespace ElectoralApp.DTO
         public string Apellido { get; set; }
 
         [Required]
-        public string Email { get; set; }
+        [Display(Name = "Partido")]
+        public int? PartidoFk { get; set; }
 
         [Required]
+        [Display(Name = "Puesto Electivo")]
+        public int? PuestoFk { get; set; }
+
+        public IFormFile FotoDePerfil { get; set; }
         public bool Estado { get; set; }
 
+        [Display(Name = "Partido")]
+        public virtual Partidos PartidoFkNavigation { get; set; }
+
+        [Display(Name = "Puesto Electivo")]
+        public virtual PuestoElectivo PuestoFkNavigation { get; set; }
         public virtual ICollection<Resultados> Resultados { get; set; }
     }
 }

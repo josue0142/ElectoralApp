@@ -12,12 +12,14 @@ namespace ElectoralApp.DTO
 
         public AutoMapperProfile()
         {
-            ConfigureCiudadano();
+            ConfigureCandidato();
         }
 
-        private void ConfigureCiudadano()
+        private void ConfigureCandidato()
         {
-            CreateMap<Ciudadanos, CiudadanosDTO>();
+            CreateMap<CandidatosDTO, Candidatos>();
+
+            CreateMap<Candidatos, CandidatosDTO>().ForMember(dest => dest.FotoDePerfil, opt => opt.Ignore());
         }
     }
 }

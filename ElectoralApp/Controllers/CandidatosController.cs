@@ -6,16 +6,24 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ElectoralApp.Models;
+using AutoMapper;
+using ElectoralApp.DTO;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace ElectoralApp.Controllers
 {
     public class CandidatosController : Controller
     {
         private readonly BDelectoralContext _context;
+        private readonly IMapper _mapper;
+        private readonly IHostingEnvironment _iHostingEnvironment;
 
-        public CandidatosController(BDelectoralContext context)
+        public CandidatosController(BDelectoralContext context, IMapper mapper, IHostingEnvironment iHostingEnvironment)
         {
             _context = context;
+            this._mapper = mapper;
+            this._iHostingEnvironment = iHostingEnvironment;
         }
 
         [HttpGet]
@@ -25,7 +33,7 @@ namespace ElectoralApp.Controllers
             return View(await bDelectoralContext.ToListAsync());
         }
 
-        // GET: Candidatos/Create
+        [HttpGet]
         public IActionResult Create()
         {
             ViewData["PartidoFk"] = new SelectList(_context.Partidos, "Id", "Nombre");
@@ -34,20 +42,38 @@ namespace ElectoralApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Candidatos candidatos)
+        public async Task<IActionResult> Create(CandidatosDTO candidatosDTO)
         {
+            var candidato = new Candidatos();
+
             if (ModelState.IsValid)
             {
-                _context.Add(candidatos);
+                string uniqueName = null;
+                if (candidatosDTO.FotoDePerfil != null)
+                {
+                    var folderPath = Path.Combine(_iHostingEnvironment.WebRootPath, "images");
+                    uniqueName = Guid.NewGuid().ToString() + "_" + candidatosDTO.FotoDePerfil.FileName;
+                    var filePath = Path.Combine(folderPath, uniqueName);
+
+                    if (filePath != null) candidatosDTO
+                            .FotoDePerfil
+                            .CopyTo(new FileStream(filePath, mode: FileMode.Create));
+                }
+
+                candidato = _mapper.Map<Candidatos>(candidatosDTO);
+
+                candidato.FotoDePerfil = uniqueName;
+
+                _context.Add(candidato);
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction("Index");
             }
 
-            ViewData["PartidoFk"] = new SelectList(_context.Partidos, "Id", "Nombre", candidatos.PartidoFk);
-            ViewData["PuestoFk"] = new SelectList(_context.PuestoElectivo, "Id", "Nombre", candidatos.PuestoFk);
+            ViewData["PartidoFk"] = new SelectList(_context.Partidos, "Id", "Nombre", candidatosDTO.PartidoFk);
+            ViewData["PuestoFk"] = new SelectList(_context.PuestoElectivo, "Id", "Nombre", candidatosDTO.PuestoFk);
 
-            return View(candidatos);
+            return View(candidatosDTO);
         }
 
         [HttpGet]
@@ -68,40 +94,74 @@ namespace ElectoralApp.Controllers
             ViewData["PartidoFk"] = new SelectList(_context.Partidos, "Id", "Nombre", candidatos.PartidoFk);
             ViewData["PuestoFk"] = new SelectList(_context.PuestoElectivo, "Id", "Nombre", candidatos.PuestoFk);
 
-            return View(candidatos);
+            var candidatoDTO = _mapper.Map<CandidatosDTO>(candidatos);
+            return View(candidatoDTO);
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id,Candidatos candidatos)
+        public async Task<IActionResult> Edit(int id, CandidatosDTO candidatosDTO)
         {
-            if (id != candidatos.Id)
+            if (id != candidatosDTO.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            var candidato = await _context.Candidatos.FirstOrDefaultAsync(d => d.Id == candidatosDTO.Id);
+            try
             {
-                try
+                if (ModelState.IsValid)
                 {
-                    _context.Update(candidatos);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {                  
-                    return NotFound();                
-                }
+                    string uniqueName = null;
+                    if (candidatosDTO.FotoDePerfil != null)
+                    {
+                        var folderPath = Path.Combine(_iHostingEnvironment.WebRootPath, "images");
+                        uniqueName = Guid.NewGuid().ToString() + "_" + candidatosDTO.FotoDePerfil.FileName;
+                        var filePath = Path.Combine(folderPath, uniqueName);
+                     
+                        if (!string.IsNullOrEmpty(candidato.FotoDePerfil))
+                        {
+                            var filePathDelete = Path.Combine(folderPath, candidato.FotoDePerfil);
 
-                return RedirectToAction("Index");
+                            if (System.IO.File.Exists(filePathDelete))
+                            {
+                                var fileInfo = new System.IO.FileInfo(filePathDelete);
+                                fileInfo.Delete();
+                            }
+                        }
+
+                        if (filePath != null)
+                        {
+                            candidatosDTO.FotoDePerfil
+                                .CopyTo(new FileStream(filePath, mode: FileMode.Create));
+                        }
+                    }
+
+                    candidato.Nombre = candidatosDTO.Nombre;
+                    candidato.Apellido = candidatosDTO.Apellido;
+                    candidato.PartidoFk = candidatosDTO.PartidoFk;
+                    candidato.PuestoFk = candidatosDTO.PuestoFk;
+                    candidato.Estado = candidatosDTO.Estado;
+                    candidato.FotoDePerfil = uniqueName;
+
+                    _context.Update(candidato);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Index");
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
 
-            ViewData["PartidoFk"] = new SelectList(_context.Partidos, "Id", "Nombre", candidatos.PartidoFk);
-            ViewData["PuestoFk"] = new SelectList(_context.PuestoElectivo, "Id", "Nombre", candidatos.PuestoFk);
+            ViewData["PartidoFk"] = new SelectList(_context.Partidos, "Id", "Nombre", candidatosDTO.PartidoFk);
+            ViewData["PuestoFk"] = new SelectList(_context.PuestoElectivo, "Id", "Nombre", candidatosDTO.PuestoFk);
 
-            return View(candidatos);
+            return View(candidatosDTO);
         }
 
-        // GET: Candidatos/Delete/5
+        [HttpGet]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

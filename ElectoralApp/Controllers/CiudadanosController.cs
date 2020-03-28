@@ -16,12 +16,10 @@ namespace ElectoralApp.Controllers
     public class CiudadanosController : Controller
     {
         private readonly BDelectoralContext _context;
-        private readonly IMapper _mapper;
 
         public CiudadanosController(BDelectoralContext context, IMapper mapper)
         {
             _context = context;
-            this._mapper = mapper;
         }
 
         [HttpGet]
