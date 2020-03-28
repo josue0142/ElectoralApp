@@ -44,9 +44,16 @@
                         <span>Inactivo</span>
                     }
                 </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
+                <td align="right">
+                    <a class="btn btn-light btn-sm" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                    @if (item.Estado == true)
+                    {
+                        <a class="btn btn-light btn-sm" asp-action="Delete" asp-route-id="@item.Id">Inactivar</a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-light btn-sm" asp-action="Delete" asp-route-id="@item.Id">Activar</a>
+                    }
                 </td>
             </tr>
         }

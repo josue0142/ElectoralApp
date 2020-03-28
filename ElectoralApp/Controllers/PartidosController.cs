@@ -151,30 +151,22 @@ namespace ElectoralApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var partidos = await _context.Partidos.FirstOrDefaultAsync(m => m.Id == id);
-            if (partidos == null)
-            {
-                return NotFound();
-            }
-
-            return View(partidos);
-        }
-
-        [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
             var partidos = await _context.Partidos.FindAsync(id);
-            _context.Partidos.Remove(partidos);
+
+            if (partidos.Estado == true)
+            {
+                partidos.Estado = false;
+            }
+            else
+            {
+                partidos.Estado = true;
+            }
+
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
         }
     }
 }

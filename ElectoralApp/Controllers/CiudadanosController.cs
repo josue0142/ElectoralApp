@@ -92,28 +92,19 @@ namespace ElectoralApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var ciudadanos = await _context.Ciudadanos.FirstOrDefaultAsync(m => m.Id == id);
-
-            if (ciudadanos == null)
-            {
-                return NotFound();
-            }
-
-            return View(ciudadanos);
-        }
-
-        [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
             var ciudadanos = await _context.Ciudadanos.FindAsync(id);
-            _context.Ciudadanos.Remove(ciudadanos);
+
+            if (ciudadanos.Estado == true)
+            {
+                ciudadanos.Estado = false;
+            }
+            else
+            {
+                ciudadanos.Estado = true;
+            }
+
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");

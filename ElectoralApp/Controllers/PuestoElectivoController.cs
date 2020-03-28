@@ -88,27 +88,19 @@ namespace ElectoralApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var puestoElectivo = await _context.PuestoElectivo.FirstOrDefaultAsync(m => m.Id == id);
-            if (puestoElectivo == null)
-            {
-                return NotFound();
-            }
-
-            return View(puestoElectivo);
-        }
-
-        [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
             var puestoElectivo = await _context.PuestoElectivo.FindAsync(id);
-            _context.PuestoElectivo.Remove(puestoElectivo);
+
+            if(puestoElectivo.Estado == true)
+            {
+                puestoElectivo.Estado = false;
+            }
+            else
+            {
+                puestoElectivo.Estado = true;
+            }
+
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");
