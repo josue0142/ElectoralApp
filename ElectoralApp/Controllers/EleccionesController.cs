@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ElectoralApp.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ElectoralApp.Controllers
 {
+    [Authorize]
     public class EleccionesController : Controller
     {
         private readonly BDelectoralContext _context;

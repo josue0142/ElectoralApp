@@ -10,9 +10,11 @@ using AutoMapper;
 using ElectoralApp.DTO;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ElectoralApp.Controllers
 {
+    [Authorize]
     public class CandidatosController : Controller
     {
         private readonly BDelectoralContext _context;
