@@ -6,11 +6,14 @@
 
 <h1>Elecciones</h1>
 
-<p>
-    <a asp-action="Create">Iniciar Proceso Electivo</a>
-</p>
+@if (ViewBag.BtnIniciarPElectivo == true)
+{
+    <p>
+        <a asp-action="Create">Iniciar Proceso Electivo</a>
+    </p>
+}
 <table class="table">
-    <thead>
+    <thead class="thead-dark">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Nombre)
@@ -27,7 +30,9 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
+            var state = "";
+
+            <tr class="font-weight-bold">
                 <td>
                     @Html.DisplayFor(modelItem => item.Nombre)
                 </td>
@@ -35,12 +40,28 @@
                     @Html.DisplayFor(modelItem => item.FechaDeRealización)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Estado)
+                    @if (item.Estado == true)
+                    {
+                        <span>Activo</span>
+                    }
+                    else
+                    {
+                        <span>Inactivo</span>
+                    }
                 </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <td align="right">
+                    @if (item.Estado == false && item.Resultados.Count == 0)
+                    {
+                        <a class="btn btn-light btn-sm" asp-action="Start" asp-route-id="@item.Id">Iniciar</a>
+                    }
+                    else if (item.Estado == true)
+                    {
+                        <a class="btn btn-light btn-sm" asp-action="Stop" asp-route-id="@item.Id">Finalizar</a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-light btn-sm" asp-action="Details" asp-route-id="@item.Id">Resultados</a>
+                    }
                 </td>
             </tr>
         }
