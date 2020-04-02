@@ -7,7 +7,7 @@
 <h1>Candidatos</h1>
 
 <p>
-    <a asp-action="Create">Añadir</a>
+    <a class="btn btn-light" asp-action="Create">Añadir</a>
 </p>
 <table class="table">
     <thead class="thead-dark">
@@ -52,7 +52,7 @@
                     @Html.DisplayFor(modelItem => item.PartidoFkNavigation.Descripción)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.PuestoFkNavigation.Descripción)
+                    @Html.DisplayFor(modelItem => item.PuestoFkNavigation.Nombre)
                 </td>
                 <td>
                     @if (item.Estado == true)

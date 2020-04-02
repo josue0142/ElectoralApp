@@ -90,11 +90,25 @@ namespace ElectoralApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
+            if(_context.Elecciones.Where(a => a.Estado == true).Any())
+            {
+                return RedirectToAction("Index");
+            }
+
             var puestoElectivo = await _context.PuestoElectivo.FindAsync(id);
 
             if(puestoElectivo.Estado == true)
             {
                 puestoElectivo.Estado = false;
+
+                var candidatos = await _context.Candidatos
+                    .Where(a => a.Estado == true && a.PuestoFk == id)
+                    .ToListAsync();
+
+                foreach (var item in candidatos)
+                {
+                    item.Estado = false;
+                }
             }
             else
             {
