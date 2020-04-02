@@ -74,11 +74,14 @@ namespace ElectoralApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Start(int id)
         {
-            var elecciones = await _context.Elecciones.FindAsync(id);
+            if(_context.Candidatos.Where(a=> a.Estado == true).Count() >= 2)
+            {
+                var elecciones = await _context.Elecciones.FindAsync(id);
 
-            elecciones.Estado = true;
-            _context.Update(elecciones);
-            await  _context.SaveChangesAsync();
+                elecciones.Estado = true;
+                _context.Update(elecciones);
+                await _context.SaveChangesAsync();
+            }
 
             return RedirectToAction("Index");
         }

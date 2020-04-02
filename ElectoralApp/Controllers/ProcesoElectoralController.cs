@@ -82,7 +82,7 @@ namespace ElectoralApp.Controllers
         public IActionResult SelectPuestoElectivo()
         {
             return View(_context.PuestoElectivo
-                .Where(a => a.Estado == true)
+                .Where(a => a.Estado == true && a.Nombre != "Ninguno")
                 .ToList());
         }
 
@@ -93,6 +93,10 @@ namespace ElectoralApp.Controllers
                 .Where(a => a.PuestoFkNavigation.Id == id)
                 .Include(a=> a.PartidoFkNavigation)
                 .ToList();
+
+            candidatos.Add(_context.Candidatos.
+                Where(a => a.Nombre == "Ninguno")
+                .FirstOrDefault());
 
             var puestoElectivo = _context.PuestoElectivo
                 .Where(a => a.Id == id)
@@ -114,6 +118,12 @@ namespace ElectoralApp.Controllers
 
             return View(candidato);
         }
+
+        /*[HttpGet]
+        public IActionResult SelecCandidatoNoneConfirm()
+        {
+            return View();
+        }*/
 
         [HttpPost]
         public IActionResult ProcessVoting(int id)

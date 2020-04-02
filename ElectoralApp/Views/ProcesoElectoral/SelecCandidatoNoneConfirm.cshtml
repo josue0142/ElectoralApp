@@ -1,0 +1,38 @@
+﻿
+@{
+    ViewData["Title"] = "Confirmar Candidato";
+}
+
+
+<h1>Esta seguro que desea votar por este candidato para este puesto ?</h1>
+<table class="table col-xl-4 container-fluid">
+    <thead class="thead-dark">
+        <tr>
+            <th>
+                Nombre
+            </th>
+            <th>
+                Apellido
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="font-weight-bold">
+            <td>
+                Ninguno
+            </td>
+            <td>
+                Ninguno
+            </td>
+            <td align="right">
+                <form method="post">
+                    <button type="submit" class="btn btn-light btn-sm" asp-action="ProcessVoting">Continuar</button>
+
+                    <a class="btn btn-danger btn-sm" asp-action="SelectPuestoElectivo">Cancelar</a>
+                </form>
+            </td>
+        </tr>
+
+    </tbody>
+</table>

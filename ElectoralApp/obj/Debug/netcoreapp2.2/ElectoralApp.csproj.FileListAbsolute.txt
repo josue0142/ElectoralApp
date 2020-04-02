@@ -53,3 +53,4 @@ C:\Users\eljos\source\repos\ElectoralApp\ElectoralApp\obj\Debug\netcoreapp2.2\Ra
 C:\Users\eljos\source\repos\ElectoralApp\ElectoralApp\obj\Debug\netcoreapp2.2\Razor\Views\ProcesoElectoral\SelectPuestoElectivo.cshtml.g.cs
 C:\Users\eljos\source\repos\ElectoralApp\ElectoralApp\obj\Debug\netcoreapp2.2\Razor\Views\ProcesoElectoral\SelectCandidato.cshtml.g.cs
 C:\Users\eljos\source\repos\ElectoralApp\ElectoralApp\obj\Debug\netcoreapp2.2\Razor\Views\ProcesoElectoral\SelectCandidatoConfirm.cshtml.g.cs
+C:\Users\eljos\source\repos\ElectoralApp\ElectoralApp\obj\Debug\netcoreapp2.2\Razor\Views\ProcesoElectoral\SelecCandidatoNoneConfirm.cshtml.g.cs
