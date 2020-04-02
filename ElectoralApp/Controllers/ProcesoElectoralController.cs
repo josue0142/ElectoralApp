@@ -32,6 +32,8 @@ namespace ElectoralApp.Controllers
         [HttpPost]
         public IActionResult Index(Ciudadanos model)
         {
+            #region validation for Ciudadano
+
             var ciudadano = _context.Ciudadanos
                 .Where(a => a.DocumentoDeIdentidad == model.DocumentoDeIdentidad)
                 .FirstOrDefault();
@@ -42,33 +44,82 @@ namespace ElectoralApp.Controllers
                 return View(model);
             }
 
-            if (!_context.Elecciones.Where(a => a.Estado == true).Any())
-            {
-                ModelState.AddModelError("", "No hay ningun Proceso Electoral Activo");
-            }
-
             if (ciudadano.Estado == false)
             {
                 ModelState.AddModelError("", "Este ciudadano se encuentra inactivo");
             }
 
-            var eleccionEnCurso = _context
+            #endregion
+
+            #region validation for eleccion
+
+            if (!_context.Elecciones.Where(a => a.Estado == true).Any())
+            {
+                ModelState.AddModelError("", "No hay ningun Proceso Electoral Activo");
+            }
+            else
+            {
+                return RedirectToAction("SelectPuestoElectivo", "ProcesoElectoral");
+            }
+
+            #endregion
+
+            /*var eleccionEnCurso = _context
                 .Elecciones
-                .Where(a => a.Estado == true).FirstOrDefault();
+                .Where(a => a.Estado == true).FirstOrDefault();*/
 
 
-            //if((eleccionEnCurso != null) && )
 
-            /*var query = _context.Ciudadanos.FromSql(@"select c.Id from Ciudadanos as c
-                                            inner join Resultados
-                                            on Resultados.Ciudadanos_FK = c.Id
-                                            inner join Elecciones as e
-                                            on Resultados.Elecciones_FK = e.Id
-                                            where e.Estado = 'true'");*/
-
-
+            /*if ((eleccionEnCurso != null))
+            {
+                return RedirectToAction();
+            }*/
 
             return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult SelectPuestoElectivo()
+        {
+            return View(_context.PuestoElectivo
+                .Where(a => a.Estado == true)
+                .ToList());
+        }
+
+        [HttpGet]
+        public IActionResult SelectCandidato(int id)
+        {
+            var candidatos = _context.Candidatos
+                .Where(a => a.PuestoFkNavigation.Id == id)
+                .ToList();
+
+            var puestoElectivo = _context.PuestoElectivo
+                .Where(a => a.Id == id)
+                .FirstOrDefault();
+
+            ViewBag.PuestoElectivoName = puestoElectivo.Nombre;
+
+            return View(candidatos);
+        }
+
+        [HttpGet]
+        public IActionResult SelectCandidatoConfirm(int id)
+        {
+            var candidato = _context.Candidatos
+                .Where(a => a.Id == id).Include(a=> a.PuestoFkNavigation)
+                .FirstOrDefault();
+
+            ViewBag.PuestoElectivoName = candidato.PuestoFkNavigation.Nombre;
+
+            return View(_context.Candidatos
+                .Where(a => a.Id == id)
+                .FirstOrDefault());
+        }
+
+        [HttpPost]
+        public IActionResult ProcessVoting(int id)
+        {
+           return RedirectToAction("SelectPuestoElectivo","ProcesoElectoral");
         }
     }
 }

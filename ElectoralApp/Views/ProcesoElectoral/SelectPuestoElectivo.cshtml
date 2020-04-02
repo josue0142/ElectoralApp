@@ -1,0 +1,37 @@
+﻿@model IEnumerable<ElectoralApp.Models.PuestoElectivo>
+
+@{
+    ViewData["Title"] = "Seleccione Puesto Electivo";
+}
+
+<h1>Seleccione el Puesto Electivo</h1>
+
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Descripción)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="font-weight-bold">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Descripción)
+                </td>
+                <td align="right">
+                    <a class="btn btn-light btn-sm" asp-action="SelectCandidato" asp-route-id="@item.Id">Seleccionar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
