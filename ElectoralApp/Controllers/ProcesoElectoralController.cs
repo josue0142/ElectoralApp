@@ -91,6 +91,7 @@ namespace ElectoralApp.Controllers
         {
             var candidatos = _context.Candidatos
                 .Where(a => a.PuestoFkNavigation.Id == id)
+                .Include(a=> a.PartidoFkNavigation)
                 .ToList();
 
             var puestoElectivo = _context.PuestoElectivo
@@ -111,9 +112,7 @@ namespace ElectoralApp.Controllers
 
             ViewBag.PuestoElectivoName = candidato.PuestoFkNavigation.Nombre;
 
-            return View(_context.Candidatos
-                .Where(a => a.Id == id)
-                .FirstOrDefault());
+            return View(candidato);
         }
 
         [HttpPost]
