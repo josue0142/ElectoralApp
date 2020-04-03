@@ -22,10 +22,10 @@ namespace ElectoralApp.Controllers
             this._context = context;
         }
 
+
         [HttpGet]
         public IActionResult Index()
         {
-            
             if (signInManager.IsSignedIn(User))
                 return RedirectToAction("Index", "Admin");
 
@@ -35,7 +35,8 @@ namespace ElectoralApp.Controllers
         [HttpPost]
         public IActionResult Index(Ciudadanos model)
         {
-            
+            if (signInManager.IsSignedIn(User))
+                return RedirectToAction("Index", "Admin");
 
             #region validation for Ciudadano
 
@@ -87,6 +88,9 @@ namespace ElectoralApp.Controllers
         [HttpGet]
         public IActionResult SelectPuestoElectivo()
         {
+            if (signInManager.IsSignedIn(User))
+                return RedirectToAction("Index", "Admin");
+
             ViewBag.PuestoVotado = "" + HttpContext.Session.GetString(Configuration.KeyNamePuestoElectivo);
 
             return View(_context.PuestoElectivo
@@ -97,6 +101,8 @@ namespace ElectoralApp.Controllers
         [HttpGet]
         public IActionResult SelectCandidato(int id)
         {
+            if (signInManager.IsSignedIn(User))
+                return RedirectToAction("Index", "Admin");
 
             var candidatos = _context.Candidatos
                 .Where(a => a.PuestoFkNavigation.Id == id)
@@ -123,6 +129,9 @@ namespace ElectoralApp.Controllers
         [HttpGet]
         public IActionResult SelectCandidatoConfirm(int id)
         {
+            if (signInManager.IsSignedIn(User))
+                return RedirectToAction("Index", "Admin");
+
             var candidato = _context.Candidatos
                 .Where(a => a.Id == id).Include(a => a.PuestoFkNavigation)
                 .FirstOrDefault();
@@ -135,6 +144,9 @@ namespace ElectoralApp.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveProcessVoting(int id)
         {
+            if (signInManager.IsSignedIn(User))
+                return RedirectToAction("Index", "Admin");
+
             try
             {
                 Resultados resultado = new Resultados();
