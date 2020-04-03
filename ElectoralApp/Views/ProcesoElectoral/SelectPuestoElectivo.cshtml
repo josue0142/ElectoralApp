@@ -29,9 +29,21 @@
                     @Html.DisplayFor(modelItem => item.Descripción)
                 </td>
                 <td align="right">
-                    <a class="btn btn-light btn-sm" asp-action="SelectCandidato" asp-route-id="@item.Id">Seleccionar</a>
+                    @{
+                        string puestoSelec = ViewBag.PuestoVotado;
+                        if (!puestoSelec.Contains(item.Nombre))
+                        {
+                            <a class="btn btn-light btn-sm" asp-action="SelectCandidato" asp-route-id="@item.Id">Seleccionar</a>
+                        }
+                    }
                 </td>
             </tr>
         }
     </tbody>
 </table>
+@if (ViewBag.VotingComplete == true)
+{
+    <div>
+        <a class="btn btn-light" asp-action="Index">Salir</a>
+    </div>
+}

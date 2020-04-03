@@ -44,6 +44,9 @@ namespace ElectoralApp
 
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<BDelectoralContext>();
 
+            services.AddDistributedMemoryCache();
+            services.AddSession();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -64,6 +67,8 @@ namespace ElectoralApp
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+
+            app.UseSession();
 
             app.UseAuthentication();
 

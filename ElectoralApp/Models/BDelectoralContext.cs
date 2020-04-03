@@ -140,7 +140,6 @@ namespace ElectoralApp.Models
 
             modelBuilder.Entity<Resultados>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.CandidatosFk).HasColumnName("Candidatos_FK");
 

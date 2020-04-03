@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ElectoralApp.Helpers;
 using ElectoralApp.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +25,7 @@ namespace ElectoralApp.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            
             if (signInManager.IsSignedIn(User))
                 return RedirectToAction("Index", "Admin");
 
@@ -32,6 +35,8 @@ namespace ElectoralApp.Controllers
         [HttpPost]
         public IActionResult Index(Ciudadanos model)
         {
+            
+
             #region validation for Ciudadano
 
             var ciudadano = _context.Ciudadanos
@@ -59,21 +64,22 @@ namespace ElectoralApp.Controllers
             }
             else
             {
+
+                var eleccion = _context.Elecciones
+                    .Where(a => a.Estado == true)
+                    .FirstOrDefault();
+
+                HttpContext.Session.SetInt32(Configuration.KeyIdEleccion,
+                    eleccion.Id);
+
+                HttpContext.Session.SetInt32(Configuration.KeyIdCiudadano,
+                    ciudadano.Id);
+
+
                 return RedirectToAction("SelectPuestoElectivo", "ProcesoElectoral");
             }
 
             #endregion
-
-            /*var eleccionEnCurso = _context
-                .Elecciones
-                .Where(a => a.Estado == true).FirstOrDefault();*/
-
-
-
-            /*if ((eleccionEnCurso != null))
-            {
-                return RedirectToAction();
-            }*/
 
             return View(model);
         }
@@ -81,6 +87,8 @@ namespace ElectoralApp.Controllers
         [HttpGet]
         public IActionResult SelectPuestoElectivo()
         {
+            ViewBag.PuestoVotado = "" + HttpContext.Session.GetString(Configuration.KeyNamePuestoElectivo);
+
             return View(_context.PuestoElectivo
                 .Where(a => a.Estado == true && a.Nombre != "Ninguno")
                 .ToList());
@@ -89,9 +97,10 @@ namespace ElectoralApp.Controllers
         [HttpGet]
         public IActionResult SelectCandidato(int id)
         {
+
             var candidatos = _context.Candidatos
                 .Where(a => a.PuestoFkNavigation.Id == id)
-                .Include(a=> a.PartidoFkNavigation)
+                .Include(a => a.PartidoFkNavigation)
                 .ToList();
 
             candidatos.Add(_context.Candidatos.
@@ -102,6 +111,10 @@ namespace ElectoralApp.Controllers
                 .Where(a => a.Id == id)
                 .FirstOrDefault();
 
+            string prueba = HttpContext.Session.GetString(Configuration.KeyNamePuestoElectivo);
+            prueba = prueba + puestoElectivo.Nombre;
+            HttpContext.Session.SetString(Configuration.KeyNamePuestoElectivo, prueba);
+
             ViewBag.PuestoElectivoName = puestoElectivo.Nombre;
 
             return View(candidatos);
@@ -111,7 +124,7 @@ namespace ElectoralApp.Controllers
         public IActionResult SelectCandidatoConfirm(int id)
         {
             var candidato = _context.Candidatos
-                .Where(a => a.Id == id).Include(a=> a.PuestoFkNavigation)
+                .Where(a => a.Id == id).Include(a => a.PuestoFkNavigation)
                 .FirstOrDefault();
 
             ViewBag.PuestoElectivoName = candidato.PuestoFkNavigation.Nombre;
@@ -119,15 +132,31 @@ namespace ElectoralApp.Controllers
             return View(candidato);
         }
 
-        /*[HttpGet]
-        public IActionResult SelecCandidatoNoneConfirm()
-        {
-            return View();
-        }*/
-
         [HttpPost]
-        public IActionResult ProcessVoting(int id)
+        public async Task<IActionResult> SaveProcessVoting(int id)
         {
+            try
+            {
+                Resultados resultado = new Resultados();
+
+                resultado.CandidatosFk = id;
+
+                resultado.CiudadanosFk = Convert.ToInt32(
+                    HttpContext.Session.GetInt32(Configuration.KeyIdCiudadano));
+
+                resultado.EleccionesFk = Convert.ToInt32(
+                    HttpContext.Session.GetInt32(Configuration.KeyIdEleccion));
+
+                await _context.Resultados.AddAsync(resultado);
+                await _context.SaveChangesAsync();
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+           
            return RedirectToAction("SelectPuestoElectivo","ProcesoElectoral");
         }
     }
