@@ -1,47 +1,48 @@
-﻿@model IEnumerable<ElectoralApp.Models.Resultados>
+﻿@model IEnumerable<ElectoralApp.Models.PuestoElectivo>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Resultados";
 }
 
-<h1>Index</h1>
+<h1>Resultados</h1>
+
+<h3>Seleccione el Puesto Electivo</h3>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class="btn btn-light" asp-action="Index" asp-controller="Elecciones">Volver al Menu Elecciones</a>
 </p>
+
 <table class="table">
-    <thead>
+    <thead class="thead-dark">
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.CandidatosFkNavigation)
+                @Html.DisplayNameFor(model => model.Nombre)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CiudadanosFkNavigation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EleccionesFkNavigation)
+                @Html.DisplayNameFor(model => model.Descripción)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CandidatosFkNavigation.Apellido)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CiudadanosFkNavigation.Apellido)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EleccionesFkNavigation.Nombre)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+             
+                if (!(item.Nombre == "Ninguno"))
+                {
+                    <tr class="font-weight-bold">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Nombre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Descripción)
+                        </td>
+                        <td align="right">
+                            <a class="btn btn-light btn-sm" asp-action="GenerateResults" asp-route-id="@item.Id">Seleccionar</a>
+                        </td>
+                    </tr>
+                }
+            
+        }
     </tbody>
 </table>

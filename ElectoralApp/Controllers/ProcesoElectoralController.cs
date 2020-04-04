@@ -63,6 +63,11 @@ namespace ElectoralApp.Controllers
             {
                 ModelState.AddModelError("", "No hay ningun Proceso Electoral Activo");
             }
+            else if (_context.Resultados
+                .Where(a=>a.CiudadanosFk == ciudadano.Id && a.EleccionesFkNavigation.Estado == true).Any())
+            {
+                ModelState.AddModelError("", "El ciudadano ya ah ejercido su derecho al voto");
+            }
             else
             {
 

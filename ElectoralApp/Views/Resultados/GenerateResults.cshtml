@@ -1,0 +1,63 @@
+﻿@model IEnumerable<ElectoralApp.Models.Candidatos>
+
+@{
+    ViewData["Title"] = "Candidatos";
+}
+
+<h1>Candidatos</h1>
+
+<p>
+    <a class="btn btn-light" asp-action="Index" 
+       asp-controller="Resultados" asp-route-id="@ViewBag.idEleccion">Volver al Menu Anterior</a>
+</p>
+
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FotoDePerfil)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Apellido)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PartidoFkNavigation)
+            </th>
+            <th>
+                Cantidad de Votos
+            </th>
+            <th>
+                Porcentaje %
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            var photoPath = "~/images/" + ((!string.IsNullOrEmpty(item.FotoDePerfil) ? item.FotoDePerfil : "nophoto.png"));
+            <tr class="font-weight-bold">
+                <td>
+                    <img width="200" height="200" src="@photoPath" alt="Responsive image" asp-append-version="true" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Apellido)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.PartidoFkNavigation.Descripción)
+                </td>
+                <td>
+                   
+                </td>
+                <td>
+               </td>
+            </tr>
+        }
+    </tbody>
+</table>

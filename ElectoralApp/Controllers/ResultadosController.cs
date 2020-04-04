@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ElectoralApp.Models;
+using Microsoft.AspNetCore.Http;
+using ElectoralApp.Helpers;
+using ElectoralApp.DTO;
 
 namespace ElectoralApp.Controllers
 {
@@ -18,154 +21,77 @@ namespace ElectoralApp.Controllers
             _context = context;
         }
 
-        // GET: Resultados
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public IActionResult Index(int id)
         {
-            var bDelectoralContext = _context.Resultados.Include(r => r.CandidatosFkNavigation).Include(r => r.CiudadanosFkNavigation).Include(r => r.EleccionesFkNavigation);
-            return View(await bDelectoralContext.ToListAsync());
+            HttpContext.Session.SetInt32(Configuration.KeyIdEleccion, id);
+
+            var query = (from re in _context.Resultados
+                         join c in _context.Candidatos
+                         on re.CandidatosFk equals c.Id
+                         join pl in _context.PuestoElectivo
+                         on c.PuestoFk equals pl.Id
+                         where re.EleccionesFk == id
+                         select pl.Id
+                        ).Distinct().ToList();
+
+
+            List<PuestoElectivo> puestoElectivos = new List<PuestoElectivo>();
+
+            foreach (var item in query)
+            {
+                puestoElectivos.Add(_context.PuestoElectivo.Find(item));
+            }
+
+            return View(puestoElectivos);
         }
 
-        // GET: Resultados/Details/5
-        public async Task<IActionResult> Details(int? id)
+        [HttpGet]
+        public IActionResult GenerateResults(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var idEleccion = HttpContext.Session.GetInt32(Configuration.KeyIdEleccion);
 
-            var resultados = await _context.Resultados
-                .Include(r => r.CandidatosFkNavigation)
-                .Include(r => r.CiudadanosFkNavigation)
-                .Include(r => r.EleccionesFkNavigation)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (resultados == null)
-            {
-                return NotFound();
-            }
+            ViewBag.idEleccion = idEleccion;
 
-            return View(resultados);
-        }
+            var context = (from re in _context.Resultados
+                           join ca in _context.Candidatos
+                           on re.CandidatosFk equals ca.Id
+                           join pl in _context.PuestoElectivo 
+                           on ca.PuestoFk equals pl.Id 
+                           where re.EleccionesFk == idEleccion &&
+                           pl.Id == id
+                           select new Candidatos
+                           {   
+                               Id = ca.Id,
+                               Nombre = ca.Nombre,
+                               Apellido = ca.Apellido,
+                               PartidoFkNavigation = ca.PartidoFkNavigation,
+                               FotoDePerfil = ca.FotoDePerfil,
 
-        // GET: Resultados/Create
-        public IActionResult Create()
-        {
-            ViewData["CandidatosFk"] = new SelectList(_context.Candidatos, "Id", "Apellido");
-            ViewData["CiudadanosFk"] = new SelectList(_context.Ciudadanos, "Id", "Apellido");
-            ViewData["EleccionesFk"] = new SelectList(_context.Elecciones, "Id", "Nombre");
-            return View();
-        }
+                           }
+                           ).Distinct();
 
-        // POST: Resultados/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,EleccionesFk,CandidatosFk,CiudadanosFk")] Resultados resultados)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(resultados);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["CandidatosFk"] = new SelectList(_context.Candidatos, "Id", "Apellido", resultados.CandidatosFk);
-            ViewData["CiudadanosFk"] = new SelectList(_context.Ciudadanos, "Id", "Apellido", resultados.CiudadanosFk);
-            ViewData["EleccionesFk"] = new SelectList(_context.Elecciones, "Id", "Nombre", resultados.EleccionesFk);
-            return View(resultados);
-        }
 
-        // GET: Resultados/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            /*var test2 = (from r in _context.Resultados
+                         join c in _context.Candidatos
+                         on r.CandidatosFk equals c.Id
+                         join pl in _context.PuestoElectivo
+                         on c.PuestoFk equals pl.Id
+                         where r.EleccionesFk == idEleccion &&
+                         pl.Id == id
+                         group r by c.Nombre into gr                  
+                         select new
+                         {
+                             Nombre = (string)gr.Key,
+                             CanVotos = gr.Count(),
+                             Partido = 
+                         }).ToList();*/
 
-            var resultados = await _context.Resultados.FindAsync(id);
-            if (resultados == null)
-            {
-                return NotFound();
-            }
-            ViewData["CandidatosFk"] = new SelectList(_context.Candidatos, "Id", "Apellido", resultados.CandidatosFk);
-            ViewData["CiudadanosFk"] = new SelectList(_context.Ciudadanos, "Id", "Apellido", resultados.CiudadanosFk);
-            ViewData["EleccionesFk"] = new SelectList(_context.Elecciones, "Id", "Nombre", resultados.EleccionesFk);
-            return View(resultados);
-        }
+            //ViewBag.List = test2; 
 
-        // POST: Resultados/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,EleccionesFk,CandidatosFk,CiudadanosFk")] Resultados resultados)
-        {
-            if (id != resultados.Id)
-            {
-                return NotFound();
-            }
+            //var test3 = _context.Resultados)
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(resultados);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ResultadosExists(resultados.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["CandidatosFk"] = new SelectList(_context.Candidatos, "Id", "Apellido", resultados.CandidatosFk);
-            ViewData["CiudadanosFk"] = new SelectList(_context.Ciudadanos, "Id", "Apellido", resultados.CiudadanosFk);
-            ViewData["EleccionesFk"] = new SelectList(_context.Elecciones, "Id", "Nombre", resultados.EleccionesFk);
-            return View(resultados);
-        }
-
-        // GET: Resultados/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var resultados = await _context.Resultados
-                .Include(r => r.CandidatosFkNavigation)
-                .Include(r => r.CiudadanosFkNavigation)
-                .Include(r => r.EleccionesFkNavigation)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (resultados == null)
-            {
-                return NotFound();
-            }
-
-            return View(resultados);
-        }
-
-        // POST: Resultados/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var resultados = await _context.Resultados.FindAsync(id);
-            _context.Resultados.Remove(resultados);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool ResultadosExists(int id)
-        {
-            return _context.Resultados.Any(e => e.Id == id);
+            return View(context);
         }
     }
 }

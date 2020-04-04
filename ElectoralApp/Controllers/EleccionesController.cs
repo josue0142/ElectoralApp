@@ -32,25 +32,9 @@ namespace ElectoralApp.Controllers
                 ViewBag.BtnIniciarPElectivo = true;
             }
 
-            return View(await _context.Elecciones.ToListAsync());
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var elecciones = await _context.Elecciones
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (elecciones == null)
-            {
-                return NotFound();
-            }
-
-            return View(elecciones);
+            return View(await _context.Elecciones
+                .Include(a=> a.Resultados)
+                .ToListAsync());
         }
 
         [HttpGet]
