@@ -71,25 +71,25 @@ namespace ElectoralApp.Controllers
                            }
                            ).Distinct();
 
+            var listCandidatosFull = (from re in _context.Resultados
+                           join ca in _context.Candidatos
+                           on re.CandidatosFk equals ca.Id
+                           join pl in _context.PuestoElectivo
+                           on ca.PuestoFk equals pl.Id
+                           where re.EleccionesFk == idEleccion &&
+                           pl.Id == id
+                           select new Candidatos
+                           {
+                               Id = ca.Id,
+                               Nombre = ca.Nombre,
+                               Apellido = ca.Apellido,
+                               PartidoFkNavigation = ca.PartidoFkNavigation,
+                               FotoDePerfil = ca.FotoDePerfil,
 
-            /*var test2 = (from r in _context.Resultados
-                         join c in _context.Candidatos
-                         on r.CandidatosFk equals c.Id
-                         join pl in _context.PuestoElectivo
-                         on c.PuestoFk equals pl.Id
-                         where r.EleccionesFk == idEleccion &&
-                         pl.Id == id
-                         group r by c.Nombre into gr                  
-                         select new
-                         {
-                             Nombre = (string)gr.Key,
-                             CanVotos = gr.Count(),
-                             Partido = 
-                         }).ToList();*/
+                           }
+                       ).ToList();
 
-            //ViewBag.List = test2; 
-
-            //var test3 = _context.Resultados)
+            ViewBag.List = listCandidatosFull;
 
             return View(context);
         }

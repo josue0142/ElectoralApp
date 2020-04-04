@@ -7,7 +7,7 @@
 <h1>Candidatos</h1>
 
 <p>
-    <a class="btn btn-light" asp-action="Index" 
+    <a class="btn btn-light" asp-action="Index"
        asp-controller="Resultados" asp-route-id="@ViewBag.idEleccion">Volver al Menu Anterior</a>
 </p>
 
@@ -35,8 +35,23 @@
         </tr>
     </thead>
     <tbody>
+        @{
+            List<Candidatos> list = ViewBag.List;
+            int count;
+        }
+
         @foreach (var item in Model)
         {
+            count = 0;
+            foreach (var item2 in list)
+            {
+                if (item.Nombre == item2.Nombre)
+                {
+                   count++;
+                }
+
+            }
+
             var photoPath = "~/images/" + ((!string.IsNullOrEmpty(item.FotoDePerfil) ? item.FotoDePerfil : "nophoto.png"));
             <tr class="font-weight-bold">
                 <td>
@@ -53,10 +68,10 @@
                     @Html.DisplayFor(modelItem => item.PartidoFkNavigation.Descripción)
                 </td>
                 <td>
-                   
+                    @count
                 </td>
                 <td>
-               </td>
+                </td>
             </tr>
         }
     </tbody>
