@@ -14,5 +14,7 @@ namespace ElectoralApp.Helpers
         public static string KeyIdCandidato => "_idCandidato";
 
         public static string KeyNamePuestoElectivo => "_idPuestoElectivo";
+
+        public static string KeyMessage => "_message";
     }
 }

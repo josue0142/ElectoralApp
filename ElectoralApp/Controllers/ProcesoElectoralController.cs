@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ElectoralApp.Helpers;
+using ElectoralApp.Mail;
 using ElectoralApp.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -15,11 +16,13 @@ namespace ElectoralApp.Controllers
     {
         private readonly SignInManager<IdentityUser> signInManager;
         private readonly BDelectoralContext _context;
+        private readonly IEmailSender _emailSender;
 
-        public ProcesoElectoralController(SignInManager<IdentityUser> signInManager, BDelectoralContext context)
+        public ProcesoElectoralController(SignInManager<IdentityUser> signInManager, BDelectoralContext context, IEmailSender emailSender)
         {
             this.signInManager = signInManager;
             this._context = context;
+            this._emailSender = emailSender;
         }
 
 
@@ -28,6 +31,8 @@ namespace ElectoralApp.Controllers
         {
             if (signInManager.IsSignedIn(User))
                 return RedirectToAction("Index", "Admin");
+
+            HttpContext.Session.Clear();
 
             return View();
         }
@@ -80,7 +85,7 @@ namespace ElectoralApp.Controllers
 
                 HttpContext.Session.SetInt32(Configuration.KeyIdCiudadano,
                     ciudadano.Id);
-
+                 
 
                 return RedirectToAction("SelectPuestoElectivo", "ProcesoElectoral");
             }
@@ -122,9 +127,9 @@ namespace ElectoralApp.Controllers
                 .Where(a => a.Id == id)
                 .FirstOrDefault();
 
-            string prueba = HttpContext.Session.GetString(Configuration.KeyNamePuestoElectivo);
-            prueba = prueba + puestoElectivo.Nombre;
-            HttpContext.Session.SetString(Configuration.KeyNamePuestoElectivo, prueba);
+            string puesto = HttpContext.Session.GetString(Configuration.KeyNamePuestoElectivo);
+            puesto = puesto + puestoElectivo.Nombre;
+            HttpContext.Session.SetString(Configuration.KeyNamePuestoElectivo, puesto);
 
             ViewBag.PuestoElectivoName = puestoElectivo.Nombre;
 
@@ -164,6 +169,20 @@ namespace ElectoralApp.Controllers
                 resultado.EleccionesFk = Convert.ToInt32(
                     HttpContext.Session.GetInt32(Configuration.KeyIdEleccion));
 
+
+
+                var candidato = await _context.Candidatos
+                    .Where(a=>a.Id==id)
+                    .Include(a=>a.PuestoFkNavigation).FirstOrDefaultAsync();
+
+                string message = HttpContext.Session.GetString(Configuration.KeyMessage);
+                message = message + candidato.Nombre 
+                    + " " + candidato.Apellido + " Para el puesto de " +
+                    candidato.PuestoFkNavigation.Nombre + ". ";
+
+                HttpContext.Session.SetString(Configuration.KeyMessage, message);
+
+
                 await _context.Resultados.AddAsync(resultado);
                 await _context.SaveChangesAsync();
 
@@ -175,6 +194,23 @@ namespace ElectoralApp.Controllers
             }
            
            return RedirectToAction("SelectPuestoElectivo","ProcesoElectoral");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SendEmail()
+        {
+            int idCiudadano = Convert.ToInt32(HttpContext.Session.GetInt32(Configuration.KeyIdCiudadano));
+
+            var to =  await _context.Ciudadanos.FindAsync(idCiudadano);
+
+            string vmessage = HttpContext.Session.GetString(Configuration.KeyMessage);
+
+            var message = new Message(new string[] { to.Email }, "Votacion", "Gracias por " +
+                "utilizar nuestros servicios, sus votos fueron: " + vmessage);
+
+            await _emailSender.SendEmailAsync(message);
+
+            return RedirectToAction("Index");
         }
     }
 }
