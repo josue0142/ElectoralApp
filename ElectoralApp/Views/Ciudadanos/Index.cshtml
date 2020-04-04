@@ -1,0 +1,75 @@
+﻿@model IEnumerable<ElectoralApp.Models.Ciudadanos>
+
+@{
+    ViewData["Title"] = "Ciudadanos";
+}
+
+<h1>Ciudadanos</h1>
+
+<p>
+    <a class="btn btn-light" asp-action="Create">Añadir</a>
+</p>
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DocumentoDeIdentidad)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Apellido)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Estado)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr class="font-weight-bold">
+            <td>
+                @Html.DisplayFor(modelItem => item.DocumentoDeIdentidad)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Apellido)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td >
+                @if (item.Estado == true)
+                {
+                    <span>Activo</span>
+                }
+                else
+                {
+                    <span>Inactivo</span>
+                }
+            </td>
+            <td align="right">
+                <a class="btn btn-light btn-sm" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                @if (item.Estado == true)
+                {
+                    <a class="btn btn-light btn-sm" asp-action="Delete" asp-route-id="@item.Id">Inactivar</a>
+                }
+                else
+                {
+                    <a class="btn btn-light btn-sm" asp-action="Delete" asp-route-id="@item.Id">Activar</a>
+                }
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+<p>
+    <a class="btn btn-light" asp-action="Index" asp-controller="Admin">Volver al Menu Administrador</a>
+</p>
