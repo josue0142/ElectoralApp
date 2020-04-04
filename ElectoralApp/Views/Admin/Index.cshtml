@@ -1,0 +1,30 @@
+﻿
+@{
+    ViewData["Title"] = "Administrador";
+}
+
+<h1>Panel de Administrador</h1>
+<p>Seleccione una opción con el botón Ingresar</p>
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th>
+                Nombre
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in ViewBag.OptionsList)
+        {
+            <tr>
+                <td class="font-weight-bold">
+                    @item.Name
+                </td>
+                <td align="right">
+                    <a class="btn btn-light btn-sm" asp-controller="@item.NameController" asp-action="Index"> Ingresar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

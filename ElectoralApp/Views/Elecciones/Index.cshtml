@@ -1,0 +1,73 @@
+﻿@model IEnumerable<ElectoralApp.Models.Elecciones>
+
+@{
+    ViewData["Title"] = "Elecciones";
+}
+
+<h1>Elecciones</h1>
+
+@if (ViewBag.BtnIniciarPElectivo == true)
+{
+    <p>
+        <a class="btn btn-light" asp-action="Create">Iniciar Proceso Electivo</a>
+    </p>
+}
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaDeRealización)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Estado)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="font-weight-bold">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaDeRealización)
+                </td>
+                <td>
+                    @if (item.Estado == true)
+                    {
+                        <span>Activo</span>
+                    }
+                    else
+                    {
+                        <span>Inactivo</span>
+                    }
+                </td>
+                <td align="right">
+
+                    @{
+                        if (item.Estado == false && item.Resultados.ToList().Count() == 0)
+                        {
+                            <a class="btn btn-light btn-sm" asp-action="Start" asp-route-id="@item.Id">Iniciar</a>
+                        }
+                        else if (item.Estado == true)
+                        {
+                            <a class="btn btn-light btn-sm" asp-action="Stop" asp-route-id="@item.Id">Finalizar</a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-light btn-sm" asp-action="Index" asp-controller="Resultados" asp-route-id="@item.Id">Resultados</a>
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<p>
+    <a class="btn btn-light" asp-action="Index" asp-controller="Admin">Volver al Menu Administrador</a>
+</p>

@@ -1,0 +1,42 @@
+﻿@model ElectoralApp.Models.Candidatos
+
+@{
+    ViewData["Title"] = "Confirmar Candidato";
+}
+
+
+<h1>Esta seguro que desea votar por este candidato para @ViewBag.PuestoElectivoName ?</h1>
+<table class="table col-xl-4 container-fluid">
+    <thead class="thead-dark">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Apellido)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="font-weight-bold">
+            <td>
+                @Html.DisplayFor(model => model.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.Apellido)
+            </td>
+            <td align="right">
+                <form method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <button type="submit" class="btn btn-light btn-sm" asp-action="SaveProcessVoting">Continuar</button>
+
+                    <a class="btn btn-danger btn-sm" asp-action="SelectPuestoElectivo">Cancelar</a>
+                </form> 
+            </td>
+        </tr>
+
+    </tbody>
+</table>
+
+
